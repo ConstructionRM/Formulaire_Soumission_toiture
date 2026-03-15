@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estimation Toiture — Construction Roger Mercier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #122040;
+    --navy-light: #1e3a6e;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-pale: #f5e9c8;
+    --cream: #faf8f2;
+    --white: #ffffff;
+    --text: #0a1628;
+    --text-muted: #6b7280;
+    --border: #ddd8cc;
+    --error: #c0392b;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    padding: 2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .logo-block { display: flex; flex-direction: column; }
+  .logo-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+  }
+  .logo-sub {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: rgba(201,168,76,0.6);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .doc-badge {
+    background: rgba(201,168,76,0.12);
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 2px;
+  }
+
+  /* ── WRAPPER ── */
+  .wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .section-header {
+    background: var(--navy);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-number {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 0.7rem;
+    font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--gold-light);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .section-body { padding: 1.5rem; }
+
+  /* ── FORM ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.5rem; }
+  .form-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+  .span2 { grid-column: span 2; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy-light);
+  }
+  label .required { color: var(--gold); margin-left: 2px; }
+
+  input[type=text], input[type=email], input[type=tel], input[type=number], textarea, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--cream);
+    transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--navy-light);
+    background: var(--white);
+  }
+  input.error, textarea.error, select.error { border-color: var(--error); }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* Autocomplete */
+  .autocomplete-wrap { position: relative; }
+  .autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    background: var(--white);
+    border: 1px solid var(--navy-light);
+    border-top: none;
+    border-radius: 0 0 3px 3px;
+    z-index: 99;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+  }
+  .autocomplete-list.open { display: block; }
+  .autocomplete-item {
+    padding: 9px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  .autocomplete-item:last-child { border-bottom: none; }
+  .autocomplete-item:hover { background: var(--gold-pale); }
+
+  /* ── CALCULATRICE ── */
+  .calc-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .slope-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .slope-chip {
+    padding: 7px 4px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--cream);
+  }
+  .slope-chip .chip-label { font-size: 0.75rem; font-weight: 500; color: var(--text); }
+  .slope-chip .chip-coeff { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+  .slope-chip.active {
+    background: var(--navy);
+    border-color: var(--navy);
+  }
+  .slope-chip.active .chip-label { color: var(--gold-light); }
+  .slope-chip.active .chip-coeff { color: rgba(201,168,76,0.7); }
+
+  .result-box {
+    background: var(--navy);
+    border-radius: 3px;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.25rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    text-align: center;
+  }
+  .res-label { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(201,168,76,0.6); margin-bottom: 4px; }
+  .res-value { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--gold-light); line-height: 1; }
+  .res-unit { font-size: 0.7rem; color: rgba(201,168,76,0.5); margin-top: 3px; }
+  .res-total .res-value { font-size: 2rem; color: var(--gold); }
+
+  /* ── TARIF ── */
+  .tarif-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 1.5fr;
+    gap: 8px;
+    align-items: start;
+  }
+  .tarif-btn {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--cream);
+  }
+  .tarif-btn .price { font-size: 1.1rem; font-weight: 500; color: var(--navy); }
+  .tarif-btn .price-label { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+  .tarif-btn.active { background: var(--navy); border-color: var(--navy); }
+  .tarif-btn.active .price { color: var(--gold-light); }
+  .tarif-btn.active .price-label { color: rgba(201,168,76,0.6); }
+  .tarif-custom { display: flex; flex-direction: column; gap: 5px; }
+  .tarif-custom label { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy-light); }
+
+  /* ── INCLUS / EXCLUS ── */
+  .clauses-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .clause-box { border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
+  .clause-title {
+    padding: 8px 14px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .clause-incl .clause-title { background: #ecf7ee; color: #2d6a4f; border-bottom: 1px solid #b7dfbf; }
+  .clause-excl .clause-title { background: #fdf2f2; color: #9b2222; border-bottom: 1px solid #f5c0c0; }
+  .clause-body { padding: 12px 14px; background: var(--white); }
+  .clause-item {
+    display: flex;
+    gap: 8px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .clause-item:last-child { margin-bottom: 0; }
+  .clause-dot { width: 5px; height: 5px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+  .clause-incl .clause-dot { background: #2d6a4f; }
+  .clause-excl .clause-dot { background: #9b2222; }
+
+  .taux-note {
+    margin-top: 1rem;
+    padding: 10px 14px;
+    background: #fffbf0;
+    border: 1px solid #f0d875;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    color: #7a5c00;
+    line-height: 1.55;
+  }
+
+  /* ── SIGNATURE ── */
+  .signature-area {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--white);
+  }
+  .sig-toolbar {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--cream);
+  }
+  .sig-toolbar span { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.05em; }
+  .sig-clear {
+    font-size: 0.72rem;
+    color: var(--navy-light);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--white);
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .sig-clear:hover { background: var(--cream); }
+  #sigCanvas {
+    display: block;
+    width: 100%;
+    height: 130px;
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  /* ── BOUTON ENVOYER ── */
+  .submit-area {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  .btn-submit {
+    background: var(--navy);
+    color: var(--gold-light);
+    border: 2px solid var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 56px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-submit:hover { background: var(--gold); color: var(--navy); }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ── STATUS ── */
+  .status-msg {
+    margin-top: 1.2rem;
+    padding: 12px 18px;
+    border-radius: 3px;
+    font-size: 0.88rem;
+    text-align: center;
+    display: none;
+  }
+  .status-msg.success { background: #ecf7ee; border: 1px solid #b7dfbf; color: #1e5c35; display: block; }
+  .status-msg.error-msg { background: #fdf2f2; border: 1px solid #f5c0c0; color: var(--error); display: block; }
+
+  .soumission-ref {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── EMAILJS CONFIG BANNER ── */
+  .config-banner {
+    background: #fff8e7;
+    border: 1px solid var(--gold);
+    border-radius: 3px;
+    padding: 10px 16px;
+    margin-bottom: 1.5rem;
+    font-size: 0.8rem;
+    color: #7a5c00;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  @media (max-width: 640px) {
+    header { padding: 1.2rem 1rem; flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+    .wrapper { padding: 1.25rem 0.75rem 3rem; }
+    .form-grid, .form-grid.cols3 { grid-template-columns: 1fr; }
+    .span2 { grid-column: span 1; }
+    .calc-row { grid-template-columns: 1fr; }
+    .slope-grid { grid-template-columns: repeat(3, 1fr); }
+    .tarif-options { grid-template-columns: repeat(2, 1fr); }
+    .clauses-grid { grid-template-columns: 1fr; }
+    .result-box { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-block">
+    <div class="logo-name">Construction Roger Mercier</div>
+    <div class="logo-sub">Estrie — Qualité & Expertise</div>
+  </div>
+  <div class="doc-badge">Soumission Toiture</div>
+</header>
+
+<div class="wrapper">
+
+
+
+  <!-- ── 1. CLIENT ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">Informations du client</div>
+    </div>
+    <div class="section-body">
+      <div class="form-grid">
+        <div class="field">
+          <label>Prénom <span class="required">*</span></label>
+          <input type="text" id="prenom" placeholder="Jean">
+        </div>
+        <div class="field">
+          <label>Nom <span class="required">*</span></label>
+          <input type="text" id="nom" placeholder="Tremblay">
+        </div>
+        <div class="field">
+          <label>Courriel <span class="required">*</span></label>
+          <input type="email" id="courriel" placeholder="jean.tremblay@email.com">
+        </div>
+        <div class="field">
+          <label>Téléphone <span class="required">*</span></label>
+          <input type="tel" id="telephone" placeholder="819 000-0000">
+        </div>
+        <div class="field span2">
+          <label>Adresse des travaux <span class="required">*</span></label>
+          <div class="autocomplete-wrap">
+            <input type="text" id="adresse" placeholder="Commencez à écrire l'adresse..." autocomplete="off">
+            <div class="autocomplete-list" id="adresse-suggestions"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. SUPERFICIE ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">Calcul de la superficie</div>
+    </div>
+    <div class="section-body">
+      <div class="calc-row">
+        <div class="field">
+          <label>Longueur en plan</label>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <input type="number" id="long_pi" value="40" min="0" step="1" style="width:65px;flex-shrink:0;">
+            <span style="font-size:0.8rem;color:var(--text-muted);flex-shrink:0;">pi</span>
+            <input type="number" id="long_po" value="0" min="0" max="11" step="1" style="width:55px;flex-shrink:0;">
+            <span style="font-size:0.8rem;color:var(--text-muted);flex-shrink:0;">po</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Largeur en plan</label>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <input type="number" id="larg_pi" value="26" min="0" step="1" style="width:65px;flex-shrink:0;">
+            <span style="font-size:0.8rem;color:var(--text-muted);flex-shrink:0;">pi</span>
+            <input type="number" id="larg_po" value="0" min="0" max="11" step="1" style="width:55px;flex-shrink:0;">
+            <span style="font-size:0.8rem;color:var(--text-muted);flex-shrink:0;">po</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Ou surface directe (pi²)</label>
+          <input type="number" id="surface_directe" placeholder="Optionnel" min="1" step="1">
+        </div>
+      </div>
+
+      <div style="margin-top: 1.25rem;">
+        <div style="font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy-light); margin-bottom: 8px;">Pente du toit</div>
+        <div class="slope-grid" id="slope-grid"></div>
+        <div style="margin-top: 10px; display: flex; gap: 1rem; align-items: center;">
+          <div class="field" style="flex: 1;">
+            <label>Ratio ": 12" personnalisé</label>
+            <input type="number" id="pente_custom" placeholder="Ex : 7" min="1" max="18" step="0.5">
+          </div>
+          <div class="field" style="flex: 1;">
+            <label>Ou angle en degrés</label>
+            <input type="number" id="angle_deg" placeholder="Ex : 26.6" min="1" max="75" step="0.1">
+          </div>
+        </div>
+      </div>
+
+      <div class="result-box">
+        <div>
+          <div class="res-label">Surface en plan</div>
+          <div class="res-value" id="r-plan">96.0</div>
+          <div class="res-unit">pi²</div>
+        </div>
+        <div>
+          <div class="res-label">Coefficient</div>
+          <div class="res-value" id="r-coeff">1.118</div>
+          <div class="res-unit">multiplicateur</div>
+        </div>
+        <div class="res-total">
+          <div class="res-label">Surface réelle</div>
+          <div class="res-value" id="r-surface">107.3</div>
+          <div class="res-unit">pi²</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. TARIFICATION ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">Tarification</div>
+    </div>
+    <div class="section-body">
+      <div style="font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy-light); margin-bottom: 10px;">Prix au pied carré (CAD)</div>
+      <div class="tarif-options">
+        <div class="tarif-btn active" onclick="selectTarif(4.00, this)">
+          <div class="price">4,00 $</div>
+          <div class="price-label">/pi²</div>
+        </div>
+        <div class="tarif-btn" onclick="selectTarif(4.50, this)">
+          <div class="price">4,50 $</div>
+          <div class="price-label">/pi²</div>
+        </div>
+        <div class="tarif-btn" onclick="selectTarif(5.00, this)">
+          <div class="price">5,00 $</div>
+          <div class="price-label">/pi²</div>
+        </div>
+        <div class="tarif-btn" onclick="selectTarif(5.50, this)">
+          <div class="price">5,50 $</div>
+          <div class="price-label">/pi²</div>
+        </div>
+        <div class="tarif-custom">
+          <label>Montant au choix</label>
+          <input type="number" id="tarif_custom" placeholder="$ / pi²" min="1" step="0.25"
+            oninput="selectTarif(parseFloat(this.value)||0, null)">
+        </div>
+      </div>
+
+      <div class="result-box" style="grid-template-columns: 1fr 1fr; margin-top: 1rem;">
+        <div>
+          <div class="res-label">Prix / pi²</div>
+          <div class="res-value" id="r-prix-pied">4,00 $</div>
+        </div>
+        <div class="res-total">
+          <div class="res-label">Montant forfaitaire</div>
+          <div class="res-value" id="r-total">4 618 $</div>
+          <div class="res-unit">avant taxes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4. PORTÉE DES TRAVAUX ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">Portée des travaux</div>
+    </div>
+    <div class="section-body">
+      <div class="clauses-grid">
+        <div class="clause-box clause-incl">
+          <div class="clause-title">✓ Inclus dans la soumission</div>
+          <div class="clause-body">
+            <div class="clause-item"><div class="clause-dot"></div><div>Retrait du vieux bardeau (pour une épaisseur seulement) et de la membrane existante</div></div>
+            <div class="clause-item"><div class="clause-dot"></div><div>Fourniture et installation de la membrane autocollante sur le premier 3 pi en bordure</div></div>
+            <div class="clause-item"><div class="clause-dot"></div><div>Fourniture et installation de la membrane synthétique sur l'ensemble de la toiture</div></div>
+            <div class="clause-item"><div class="clause-dot"></div><div>Fourniture et installation du nouveau bardeau d'asphalte qualité <strong>Marathon 25</strong></div></div>
+            <div class="clause-item"><div class="clause-dot"></div><div>Disposition et disposition des résidus de construction</div></div>
+          </div>
+        </div>
+        <div class="clause-box clause-excl">
+          <div class="clause-title">✕ Non inclus dans la soumission</div>
+          <div class="clause-body">
+            <div class="clause-item"><div class="clause-dot"></div><div>Le remplacement de contreplaqué si nécessaire et autres réparations structurales</div></div>
+            <div class="clause-item"><div class="clause-dot"></div><div>Le remplacement de maximum (faîtage, rives) et de solins</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="taux-note">
+        <strong>Note — travaux supplémentaires :</strong> Les travaux non inclus, si jugés nécessaires, seront soumis au client préalablement et seront, le cas échéant, réalisés au taux horaire de <strong>85 $/h</strong> plus 15 % de frais de gestion. Les matériaux nécessaires seront facturés au prix coûtant plus <strong>15 % de frais de gestion</strong>.
+      </div>
+
+      <div style="margin-top: 1.25rem;">
+        <div class="field">
+          <label>Notes ou précisions additionnelles</label>
+          <textarea id="notes" placeholder="Ex: accès difficile, type de toiture particulier, nombre de versants…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. SIGNATURE ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">Acceptation et signature</div>
+    </div>
+    <div class="section-body">
+      <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.25rem;">
+        En signant ci-dessous, le client confirme avoir pris connaissance de la soumission, de la portée des travaux inclus et exclus, et accepte les conditions tarifaires présentées. Cette soumission est valide pour une période de <strong>30 jours</strong> à compter de la date d'émission.
+      </p>
+      <div style="margin-bottom: 8px; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy-light);">Signature du client</div>
+      <div class="signature-area">
+        <div class="sig-toolbar">
+          <span>Signez à l'intérieur de cette zone</span>
+          <button class="sig-clear" onclick="clearSignature()">Effacer</button>
+        </div>
+        <canvas id="sigCanvas"></canvas>
+      </div>
+      <div style="margin-top: 0.75rem; display: flex; gap: 1.5rem; font-size: 0.8rem; color: var(--text-muted);">
+        <span>Date : <strong id="date-today"></strong></span>
+        <span>No soumission : <strong id="ref-num"></strong></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="submit-area">
+    <button class="btn-submit" id="btn-submit" onclick="envoyerSoumission()">
+      Envoyer la soumission
+    </button>
+    <div class="soumission-ref">La soumission sera transmise par courriel au client et à <strong>info@constructionrm.ca</strong></div>
+    <div class="status-msg" id="status-msg"></div>
+  </div>
+
+</div>
+
+<script>
+/* ══ CONFIG EMAILJS ══════════════════════════════════════════════ */
+const EMAILJS_PUBLIC_KEY  = 'LEqzBFaMHSa7pKrQG';
+const EMAILJS_SERVICE_ID  = 'service_ehb7zxt';
+const EMAILJS_TEMPLATE_ID = 'template_x3b4f7r';
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
+/* ══ NUMÉRO DE SOUMISSION ════════════════════════════════════════ */
+function genRef() {
+  const d = new Date();
+  return 'CRM-' + d.getFullYear() +
+    String(d.getMonth()+1).padStart(2,'0') +
+    String(d.getDate()).padStart(2,'0') + '-' +
+    String(Math.floor(Math.random()*900)+100);
+}
+const REF = genRef();
+const TODAY = new Date().toLocaleDateString('fr-CA', { year:'numeric', month:'long', day:'numeric' });
+document.getElementById('ref-num').textContent  = REF;
+document.getElementById('date-today').textContent = TODAY;
+
+/* ══ AUTOCOMPLETE ADRESSE (nominatim) ═══════════════════════════ */
+let acTimer;
+const adresseInput = document.getElementById('adresse');
+const suggList     = document.getElementById('adresse-suggestions');
+
+adresseInput.addEventListener('input', () => {
+  clearTimeout(acTimer);
+  const q = adresseInput.value.trim();
+  if (q.length < 4) { suggList.classList.remove('open'); return; }
+  acTimer = setTimeout(() => fetchAdresses(q), 400);
+});
+
+async function fetchAdresses(q) {
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&countrycodes=ca&limit=6&format=json&addressdetails=1`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'fr' } });
+    const data = await res.json();
+    suggList.innerHTML = '';
+    if (!data.length) { suggList.classList.remove('open'); return; }
+    data.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'autocomplete-item';
+      div.textContent = item.display_name;
+      div.addEventListener('mousedown', () => {
+        adresseInput.value = item.display_name;
+        suggList.classList.remove('open');
+      });
+      suggList.appendChild(div);
+    });
+    suggList.classList.add('open');
+  } catch(e) { suggList.classList.remove('open'); }
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.autocomplete-wrap')) suggList.classList.remove('open');
+});
+
+/* ══ CALCULATRICE ════════════════════════════════════════════════ */
+const SLOPES = [
+  { rise: 4,  label: '4:12' },
+  { rise: 6,  label: '6:12' },
+  { rise: 8,  label: '8:12' },
+  { rise: 10, label: '10:12' },
+  { rise: 12, label: '12:12' },
+  { rise: 14, label: '14:12' },
+];
+let currentRise = 6;
+
+function getCoeff(rise) { return Math.sqrt(1 + Math.pow(rise/12, 2)); }
+
+function buildSlopes() {
+  const g = document.getElementById('slope-grid');
+  g.innerHTML = SLOPES.map(s => `
+    <div class="slope-chip ${s.rise===6?'active':''}" id="chip-${s.rise}" onclick="selectSlope(${s.rise})">
+      <div class="chip-label">${s.label}</div>
+      <div class="chip-coeff">×${getCoeff(s.rise).toFixed(3)}</div>
+    </div>`).join('');
+}
+
+function selectSlope(rise) {
+  currentRise = rise;
+  document.getElementById('pente_custom').value = '';
+  document.getElementById('angle_deg').value = '';
+  document.querySelectorAll('.slope-chip').forEach(c => c.classList.remove('active'));
+  const chip = document.getElementById('chip-'+rise);
+  if (chip) chip.classList.add('active');
+  compute();
+}
+
+function compute() {
+  let rise = currentRise;
+
+  const pc = parseFloat(document.getElementById('pente_custom').value);
+  const ad = parseFloat(document.getElementById('angle_deg').value);
+  if (!isNaN(pc) && pc > 0) { rise = pc; document.querySelectorAll('.slope-chip').forEach(c=>c.classList.remove('active')); }
+  else if (!isNaN(ad) && ad > 0) { rise = Math.tan(ad*Math.PI/180)*12; document.querySelectorAll('.slope-chip').forEach(c=>c.classList.remove('active')); }
+
+  const coeff = getCoeff(rise);
+
+  const sd = parseFloat(document.getElementById('surface_directe').value);
+  const lpi = parseFloat(document.getElementById('long_pi').value)||0;
+  const lpo = parseFloat(document.getElementById('long_po').value)||0;
+  const wpi = parseFloat(document.getElementById('larg_pi').value)||0;
+  const wpo = parseFloat(document.getElementById('larg_po').value)||0;
+  const lft = lpi + lpo/12;
+  const wft = wpi + wpo/12;
+  const plan = (!isNaN(sd) && sd > 0) ? sd : lft * wft;
+
+  const pieds = plan * coeff;
+
+  document.getElementById('r-plan').textContent    = Math.round(plan).toLocaleString('fr-CA');
+  document.getElementById('r-coeff').textContent   = coeff.toFixed(4);
+  document.getElementById('r-surface').textContent = Math.round(pieds).toLocaleString('fr-CA');
+
+  calcTotal();
+}
+
+/* ══ TARIFICATION ════════════════════════════════════════════════ */
+let currentTarif = 4.00;
+
+function selectTarif(val, btn) {
+  currentTarif = isNaN(val) ? 0 : val;
+  document.querySelectorAll('.tarif-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('r-prix-pied').textContent =
+    currentTarif.toFixed(2).replace('.',',') + ' $';
+  calcTotal();
+}
+
+function calcTotal() {
+  const pieds = getPieds();
+  const total = pieds * currentTarif;
+  document.getElementById('r-total').textContent =
+    Math.round(total).toLocaleString('fr-CA') + ' $';
+}
+
+function getPieds() {
+  const sd  = parseFloat(document.getElementById('surface_directe').value);
+  const lpi = parseFloat(document.getElementById('long_pi').value)||0;
+  const lpo = parseFloat(document.getElementById('long_po').value)||0;
+  const wpi = parseFloat(document.getElementById('larg_pi').value)||0;
+  const wpo = parseFloat(document.getElementById('larg_po').value)||0;
+  const lft = lpi + lpo/12;
+  const wft = wpi + wpo/12;
+  let plan  = (!isNaN(sd) && sd > 0) ? sd : lft * wft;
+  let rise  = currentRise;
+  const pc  = parseFloat(document.getElementById('pente_custom').value);
+  const ad  = parseFloat(document.getElementById('angle_deg').value);
+  if (!isNaN(pc) && pc > 0) rise = pc;
+  else if (!isNaN(ad) && ad > 0) rise = Math.tan(ad*Math.PI/180)*12;
+  return plan * getCoeff(rise);
+}
+
+['long_pi','long_po','larg_pi','larg_po','surface_directe','pente_custom','angle_deg'].forEach(id =>
+  document.getElementById(id).addEventListener('input', compute));
+
+/* ══ SIGNATURE ══════════════════════════════════════════════════ */
+const canvas = document.getElementById('sigCanvas');
+const ctx    = canvas.getContext('2d');
+let drawing  = false;
+let hasSig   = false;
+
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width  = rect.width;
+  canvas.height = rect.height;
+  ctx.strokeStyle = '#0a1628';
+  ctx.lineWidth   = 2;
+  ctx.lineCap     = 'round';
+  ctx.lineJoin    = 'round';
+}
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const src  = e.touches ? e.touches[0] : e;
+  return { x: src.clientX - rect.left, y: src.clientY - rect.top };
+}
+
+canvas.addEventListener('mousedown',  e => { drawing = true; ctx.beginPath(); const p=getPos(e); ctx.moveTo(p.x,p.y); });
+canvas.addEventListener('mousemove',  e => { if (!drawing) return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); hasSig=true; });
+canvas.addEventListener('mouseup',    () => drawing = false);
+canvas.addEventListener('mouseleave', () => drawing = false);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing=true; ctx.beginPath(); const p=getPos(e); ctx.moveTo(p.x,p.y); }, {passive:false});
+canvas.addEventListener('touchmove',  e => { e.preventDefault(); if(!drawing)return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); hasSig=true; }, {passive:false});
+canvas.addEventListener('touchend',   () => drawing=false);
+
+function clearSignature() { ctx.clearRect(0,0,canvas.width,canvas.height); hasSig=false; }
+
+window.addEventListener('load',  resizeCanvas);
+window.addEventListener('resize', resizeCanvas);
+
+/* ══ VALIDATION ════════════════════════════════════════════════ */
+function validate() {
+  let ok = true;
+  ['prenom','nom','courriel','telephone','adresse'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('error');
+    if (!el.value.trim()) { el.classList.add('error'); ok = false; }
+  });
+  return ok;
+}
+
+/* ══ ENVOI EMAILJS ══════════════════════════════════════════════ */
+async function envoyerSoumission() {
+  if (!validate()) {
+    showStatus('Veuillez remplir tous les champs obligatoires.', 'error-msg');
+    return;
+  }
+
+  const pieds    = getPieds();
+  const total    = Math.round(pieds * currentTarif);
+  const sigData  = hasSig ? canvas.toDataURL('image/png') : '';
+
+  const params = {
+    ref:         REF,
+    date:        TODAY,
+    prenom:      document.getElementById('prenom').value,
+    nom:         document.getElementById('nom').value,
+    courriel:    document.getElementById('courriel').value,
+    telephone:   document.getElementById('telephone').value,
+    adresse:     document.getElementById('adresse').value,
+    surface_plan: document.getElementById('r-plan').textContent + ' pi²',
+    coefficient:  document.getElementById('r-coeff').textContent,
+    surface_reel: document.getElementById('r-surface').textContent + ' pi²',
+    prix_pied:    currentTarif.toFixed(2) + ' $',
+    montant:      total.toLocaleString('fr-CA') + ' $',
+    notes:        document.getElementById('notes').value || 'Aucune',
+    signature:    sigData,
+    to_email:     document.getElementById('courriel').value,
+    cc_email:     'info@constructionrm.ca',
+  };
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+    showStatus(`✓ Soumission ${REF} envoyée avec succès au client et à info@constructionrm.ca`, 'success');
+    btn.textContent = 'Soumission envoyée ✓';
+  } catch(err) {
+    showStatus('Erreur lors de l\'envoi : ' + (err.text || JSON.stringify(err)) + ' — Vérifiez la configuration EmailJS.', 'error-msg');
+    btn.disabled = false;
+    btn.textContent = 'Envoyer la soumission';
+  }
+}
+
+function showStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + cls;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ══ INIT ═══════════════════════════════════════════════════════ */
+buildSlopes();
+compute();
+</script>
+</body>
+</html>
